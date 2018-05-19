@@ -4,11 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.udacity.sandwichclub.model.Sandwich;
 import com.udacity.sandwichclub.utils.JsonUtils;
+
+import java.util.Iterator;
+import java.util.List;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -43,7 +47,7 @@ public class DetailActivity extends AppCompatActivity {
             return;
         }
 
-        populateUI();
+        populateUI(sandwich);
         Picasso.with(this)
                 .load(sandwich.getImage())
                 .into(ingredientsIv);
@@ -56,7 +60,36 @@ public class DetailActivity extends AppCompatActivity {
         Toast.makeText(this, R.string.detail_error_message, Toast.LENGTH_SHORT).show();
     }
 
-    private void populateUI() {
+    private void populateUI(Sandwich sandwich) {
+        TextView alsoKnownTv = findViewById(R.id.also_known_tv);
+        TextView originTv = findViewById(R.id.origin_tv);
+        TextView descriptionTv = findViewById(R.id.description_tv);
+        TextView ingredientsTv = findViewById(R.id.ingredients_tv);
 
+        if (sandwich.getAlsoKnownAs() != null && !sandwich.getAlsoKnownAs().isEmpty() && !sandwich.getAlsoKnownAs().get(0).equals("")) {
+            alsoKnownTv.setText(listToString(sandwich.getAlsoKnownAs(), ", "));
+        }
+        if (sandwich.getPlaceOfOrigin() != null && sandwich.getPlaceOfOrigin().length() > 0) {
+            originTv.setText(sandwich.getPlaceOfOrigin());
+        }
+        if (sandwich.getDescription() != null && sandwich.getDescription().length() > 0) {
+            descriptionTv.setText(sandwich.getDescription());
+        }
+        if (sandwich.getIngredients() != null && !sandwich.getIngredients().isEmpty() && !sandwich.getIngredients().get(0).equals("")) {
+            ingredientsTv.setText(listToString(sandwich.getIngredients(), ", "));
+        }
+    }
+
+    private String listToString(List<String> stringList, String delimiter) {
+        StringBuilder sb = new StringBuilder();
+        Iterator<String> stringIterator = stringList.iterator();
+
+        while (stringIterator.hasNext()) {
+            sb.append(stringIterator.next());
+            if (stringIterator.hasNext()) {
+                sb.append(delimiter);
+            }
+        }
+        return sb.toString();
     }
 }
